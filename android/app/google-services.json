@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "413625258579",
+    "project_id": "sociio-d665c",
+    "storage_bucket": "sociio-d665c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413625258579:android:f39657bb0ad43f640eeca6",
+        "android_client_info": {
+          "package_name": "com.example.shop_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "413625258579-o6d92ptbbfltsur5rl38r6f9cihhm11s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR5lfHn8p-2KRfkCADU_v4QUrNPk45_KI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413625258579-o6d92ptbbfltsur5rl38r6f9cihhm11s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

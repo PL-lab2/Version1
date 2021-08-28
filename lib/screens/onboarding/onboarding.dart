@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../constants.dart';
 import 'package:Sociio/screens/sign_in/sign_in_screen.dart';
+import '../../../components/default_button.dart';
+import 'package:Sociio/size_config.dart';
 
 class Onboarding extends StatefulWidget {
   static String routeName = "/onboarding";
@@ -37,6 +39,7 @@ class _OnboardingState extends State<Onboarding> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -172,41 +175,6 @@ class _OnboardingState extends State<Onboarding> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: _buildPageIndicator(),
                 ),
-                _currentPage != _numPages - 1
-                    ? Expanded(
-                        child: Align(
-                          alignment: FractionalOffset.bottomRight,
-                          // ignore: deprecated_member_use
-                          child: FlatButton(
-                            onPressed: () {
-                              _pageController.nextPage(
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.ease,
-                              );
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
-                                  'Next',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22.0,
-                                  ),
-                                ),
-                                SizedBox(width: 10.0),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 30.0,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    : Text(''),
               ],
             ),
           ),
@@ -221,18 +189,23 @@ class _OnboardingState extends State<Onboarding> {
                 onTap: () {
                   Navigator.pushNamed(context, SignInScreen.routeName);
                 },
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 30.0),
-                    child: Text(
-                      'Get started',
-                      style: TextStyle(
-                        color: Color(0xFF5B16D0),
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 30.0),
+                          child: DefaultButton(
+                            text: "Continue",
+                            press: () {
+                              Navigator.pushNamed(
+                                  context, SignInScreen.routeName);
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             )

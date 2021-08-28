@@ -14,7 +14,7 @@ class Body extends StatelessWidget {
         ),
         SizedBox(height: SizeConfig.screenHeight * 0.08),
         Text(
-          "Login Success",
+          "Regisration Successful",
           style: TextStyle(
             fontSize: getProportionateScreenWidth(30),
             fontWeight: FontWeight.bold,

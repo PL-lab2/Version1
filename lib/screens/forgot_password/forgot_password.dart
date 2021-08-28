@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:Sociio/size_config.dart';
-import 'package:Sociio/methods.dart';
-import 'package:Sociio/screens/home_screen/home_screen.dart';
 import 'components/body.dart';
 
-class SignUpScreen extends StatelessWidget {
-  static String routeName = "/sign_up";
+class ForgotPassword extends StatelessWidget {
+  static String routeName = "/forgot_password";
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sign Up"),
+        title: Text("Forgot Password"),
       ),
       body: Body(),
     );

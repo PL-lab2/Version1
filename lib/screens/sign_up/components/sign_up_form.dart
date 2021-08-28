@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:Sociio/components/custom_surfix_icon.dart';
 import 'package:Sociio/components/default_button.dart';
 import 'package:Sociio/components/form_error.dart';
-import 'package:Sociio/screens/login_success/login_success_screen.dart';
-
+import 'package:Sociio/screens/register_success/register_success_screen.dart';
+import 'package:Sociio/methods.dart';
+import 'package:Sociio/screens/home_screen/home_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -14,10 +15,12 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
+  String name;
   String email;
   String password;
-  String conform_password;
   bool remember = false;
+  bool isLoading = false;
+
   final List<String> errors = [];
 
   void addError({String error}) {
@@ -36,61 +39,21 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Form(
       key: _formKey,
       child: Column(
         children: [
+          buildNameFormField(),
+          SizedBox(height: getProportionateScreenHeight(30)),
           buildEmailFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
           buildPasswordFormField(),
           SizedBox(height: getProportionateScreenHeight(30)),
-          buildConformPassFormField(),
           FormError(errors: errors),
           SizedBox(height: getProportionateScreenHeight(40)),
-          DefaultButton(
-            text: "Continue",
-            press: () {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                // if all are valid then go to success screen
-                Navigator.pushNamed(context, LoginSuccessScreen.routeName);
-              }
-            },
-          ),
+          customButton(size),
         ],
-      ),
-    );
-  }
-
-  TextFormField buildConformPassFormField() {
-    return TextFormField(
-      obscureText: true,
-      onSaved: (newValue) => conform_password = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          removeError(error: kPassNullError);
-        } else if (value.isNotEmpty && password == conform_password) {
-          removeError(error: kMatchPassError);
-        }
-        conform_password = value;
-      },
-      validator: (value) {
-        if (value.isEmpty) {
-          addError(error: kPassNullError);
-          return "";
-        } else if ((password != value)) {
-          addError(error: kMatchPassError);
-          return "";
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: "Confirm Password",
-        hintText: "Re-enter your password",
-        // If  you are using latest version of flutter then lable text and hint text shown like this
-        // if you r using flutter less then 1.20.* then maybe this is not working properly
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
       ),
     );
   }
@@ -101,6 +64,7 @@ class _SignUpFormState extends State<SignUpForm> {
       onSaved: (newValue) => password = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          password = value;
           removeError(error: kPassNullError);
         } else if (value.length >= 8) {
           removeError(error: kShortPassError);
@@ -134,6 +98,7 @@ class _SignUpFormState extends State<SignUpForm> {
       onSaved: (newValue) => email = newValue,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          email = value;
           removeError(error: kEmailNullError);
         } else if (emailValidatorRegExp.hasMatch(value)) {
           removeError(error: kInvalidEmailError);
@@ -158,6 +123,73 @@ class _SignUpFormState extends State<SignUpForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
+    );
+  }
+
+  TextFormField buildNameFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.name,
+      onSaved: (newValue) => name = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          name = value;
+          removeError(error: kEmailNullError);
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Name",
+        hintText: "Enter your name",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
+      ),
+    );
+  }
+
+  Widget customButton(Size size) {
+    return GestureDetector(
+      onTap: () {
+        if (name.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
+          setState(() {
+            isLoading = true;
+          });
+
+          createAccount(name, email, password).then((user) {
+            if (user != null) {
+              setState(() {
+                isLoading = false;
+              });
+              Navigator.pushNamed(context, HomeScreen.routeName);
+              print("Account Created Sucessfull");
+            } else {
+              print("Login Failed");
+              setState(() {
+                isLoading = false;
+              });
+            }
+          });
+        } else {
+          print("Please enter Fields");
+        }
+      },
+      child: Container(
+          height: size.height / 14,
+          width: size.width / 1.2,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.blue,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            "Create Account",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          )),
     );
   }
 }
