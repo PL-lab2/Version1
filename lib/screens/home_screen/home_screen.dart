@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:Sociio/screens/home_screen/components/chat_screen.dart';
 import 'package:Sociio/common/styles.dart';
@@ -5,11 +6,21 @@ import 'package:Sociio/models/message.dart';
 import 'package:Sociio/screens/home_screen/components/avatar.dart';
 import 'package:Sociio/models/user_model.dart';
 import 'package:Sociio/methods.dart';
-import 'package:Sociio/screens/sign_in/sign_in_screen.dart';
-import 'package:Sociio/screens/home_screen/components/button_icon.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static String routeName = "/home_screen";
+  MainHomePage createState() => MainHomePage();
+}
+
+class MainHomePage extends State<HomeScreen> {
+  static String routeName = "/home_screen";
+
+  bool isSearching = false;
+  String myName, myProfilePic, myUserName, myEmail;
+  Stream usersStream, chatRoomsStream;
+
+  TextEditingController searchUsernameEditingController =
+      TextEditingController();
 
   Widget buildUserAvatar(User user) {
     return Padding(
@@ -104,6 +115,79 @@ class HomeScreen extends StatelessWidget {
     return time.substring(time.length - 2);
   }
 
+  getChatRoomIdByNames(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
+
+  onSearchBtnClick() async {
+    isSearching = true;
+    setState(() {});
+    usersStream = await getUserByName(searchUsernameEditingController.text);
+  }
+
+  Widget searchListUserTile({String profileUrl, name, username, email}) {
+    return GestureDetector(
+      onTap: () {
+        var chatRoomId = getChatRoomIdByNames(myUserName, username);
+        Map<String, dynamic> chatRoomInfoMap = {
+          "users": [myUserName, username]
+        };
+        createChatRoom(chatRoomId, chatRoomInfoMap);
+        Navigator.push(
+            this.context,
+            MaterialPageRoute(
+                builder: (context) => ChatScreen(username, name)));
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: Image.network(
+                profileUrl,
+                height: 40,
+                width: 40,
+              ),
+            ),
+            SizedBox(width: 12),
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text(name), Text(email)])
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget searchUsersList() {
+    return StreamBuilder(
+      stream: usersStream,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: snapshot.data.docs.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot ds = snapshot.data.docs[index];
+                  return searchListUserTile(
+                      profileUrl: ds["imgUrl"],
+                      name: ds["name"],
+                      email: ds["email"],
+                      username: ds["username"]);
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,6 +259,13 @@ class HomeScreen extends StatelessWidget {
                                 horizontal: 4.0, vertical: 12.0)),
                       ),
                     ),
+                    GestureDetector(
+                      onTap: () {
+                        if (searchUsernameEditingController.text != "") {
+                          onSearchBtnClick();
+                        }
+                      },
+                    )
                   ],
                 ),
               ),
