@@ -77,3 +77,28 @@ Future resetPassword(BuildContext context, String email) async {
     print("error");
   }
 }
+
+Future<Stream<QuerySnapshot>> getUserByName(String name) async {
+  return FirebaseFirestore.instance
+      .collection("users")
+      .where("name", isEqualTo: name)
+      .snapshots();
+}
+
+createChatRoom(String chatRoomId, Map chatRoomInfoMap) async {
+  final snapShot = await FirebaseFirestore.instance
+      .collection("chatrooms")
+      .doc(chatRoomId)
+      .get();
+
+  if (snapShot.exists) {
+    // chatroom already exists
+    return true;
+  } else {
+    // chatroom does not exists
+    return FirebaseFirestore.instance
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .set(chatRoomInfoMap);
+  }
+}
