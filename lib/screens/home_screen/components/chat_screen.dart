@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
   final User sender;
-  const ChatScreen(username, name, {Key key, this.sender}) : super(key: key);
+  const ChatScreen({Key key, this.sender}) : super(key: key);
   buildChat(Message message, BuildContext context) {
     final bool isCurrentUser = message.sender.id == currentUser.id;
     return Padding(

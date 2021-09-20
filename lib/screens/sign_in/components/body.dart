@@ -1,3 +1,4 @@
+import 'package:Sociio/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:Sociio/components/no_account_text.dart';
 import 'package:Sociio/components/socal_card.dart';
@@ -37,7 +38,9 @@ class Body extends StatelessWidget {
                   children: [
                     SocalCard(
                       icon: "assets/icons/google-icon.svg",
-                      press: () {},
+                      press: () {
+                        AuthMethods().signInWithGoogle(context);
+                      },
                     ),
                     SocalCard(
                       icon: "assets/icons/facebook-2.svg",

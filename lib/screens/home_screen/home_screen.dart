@@ -137,10 +137,10 @@ class MainHomePage extends State<HomeScreen> {
           "users": [myUserName, username]
         };
         createChatRoom(chatRoomId, chatRoomInfoMap);
-        Navigator.push(
-            this.context,
-            MaterialPageRoute(
-                builder: (context) => ChatScreen(username, name)));
+        // Navigator.push(
+        //     this.context,
+        //     MaterialPageRoute(
+        //         builder: (context) => ChatScreen(username, name)));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8),
