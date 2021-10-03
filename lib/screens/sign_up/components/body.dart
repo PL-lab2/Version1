@@ -1,3 +1,4 @@
+import 'package:Sociio/screens/home_screen/home_screen.dart';
 import 'package:Sociio/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:Sociio/components/socal_card.dart';
@@ -33,7 +34,14 @@ class Body extends StatelessWidget {
                     SocalCard(
                       icon: "assets/icons/google-icon.svg",
                       press: () {
-                        AuthMethods().signInWithGoogle(context);
+                        AuthMethods().signInWithGoogle(context).then((user) {
+                          if (user != null) {
+                            Navigator.pushNamed(context, HomeScreen.routeName);
+                            print("Account Created Sucessfull");
+                          } else {
+                            print("Login Failed");
+                          }
+                        });
                       },
                     ),
                     SocalCard(
